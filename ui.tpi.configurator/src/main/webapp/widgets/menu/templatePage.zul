@@ -1,0 +1,13 @@
+<zk xmlns:n="native">
+	<style src="/widgets/css/templatePageStyle.css" />
+
+	<div id="container" sclass="container">
+		<vlayout id="portalContent" width="100%">
+			<n:h1 class="mo_head">Template Page</n:h1>
+			<separator bar="true"></separator>
+			<div class="about">
+				<label>This is a template page for Fiesta-IoT</label>	
+			</div>
+		</vlayout>
+	</div>
+</zk>

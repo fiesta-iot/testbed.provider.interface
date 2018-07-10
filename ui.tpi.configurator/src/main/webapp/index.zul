@@ -1,0 +1,202 @@
+<zk>
+	<style>   
+		.z-tab-image{width:20px; height:20px;}
+		.z-caption-image{width:20px; height:20px;}
+		.nav_toolbar .z-toolbarbutton-content i { font-size: 20px;}
+		.nav_tabs .z-tabpanel { padding: 0; border-bottom: 0 none;}
+		.nav_tabs .z-tabpanels .z-toolbarbutton-content { padding: 4px;}
+		.nav_category { cursor:pointer; }
+		.nav_text { color: #696569; font-size : 24px; font-weight: bold;}
+		.z-tab-text {
+			cursor: default;
+			font-weight: bold;
+			font-size:15px;
+		}
+		.z-listheader-content{
+			font-size:15px;
+			padding-left:15px;
+			font-weight: bold;
+		}
+		.z-combobox-input{
+			font-size:13px;
+		}
+		.z-column-content{
+			font-size:15px;
+		}
+	</style>
+	<div>
+		<window id="win" title="TPI Configurations" width="70%" height="78%" border="normal" minimizable="true" 
+		maximizable="true" closable="true" apply="ui.tpi.configurator.EditController" onCreate="win.setSizable(true);win.doOverlapped(); " position="parent"
+		onClose="self.visible = false; event.stopPropagation();">
+				<zscript>
+					void move(Listbox src, Listbox dst) {            
+						Listitem s = src.getSelectedItem();
+						if (s == null)
+							Messagebox.show("Select a resource first.");
+						else
+							s.setParent(dst);
+					}
+				</zscript>
+				<!-- .................................................  TABS  ................................................. -->                         
+				<tabbox height="100%"  width="100%">
+					<tabs id="tbs" >
+						<tab label="Discovery" image="https://www.sitewelder.com/art2012/logo-big-searchoptimization.png" closable="false" />
+						<tab id="scheduleTab" label="Schedule" image="http://cdn.playbuzz.com/cdn/48d35ba7-21db-406e-90e2-a1f229729838/40c2df71-c37b-4beb-842a-c5e5a3e59fe9.png" closable="false" />
+						<tab label="Status" image="http://www.redtone.com/wp-content/uploads/2015/05/reporticon-blue1.png" closable="false" />
+					</tabs>
+					<tabpanels id="tps">
+					<!-- .................................................  TAB 1: RESOURCES  ................................................. -->                         
+						<tabpanel style="padding-top:15px;">	
+							<label>Testbed:</label>
+							<combobox id="testbedsCombobox" model="${win$composer.testbedsModel}" autodrop="true" width="250px">
+								<template name="model">
+									<comboitem label="${each}" tooltiptext="${each}"/>
+								</template>
+							</combobox>
+							<hlayout height="300px" style="padding:10px">
+								<listbox id="resourcesListbox" model="${win$composer.resourcesModel}" hflex="1" vflex="true" rows="5" checkmark="true" multiple="true">
+									<listhead>
+										<listheader label="Resources"/>
+									</listhead>
+									<template name="model">
+										<listitem label="${each}" draggable="move" droppable="move" tooltiptext="${each}"/>
+									</template>
+								</listbox>         
+								<vbox spacing="10px" width="24px">
+									<button id="add" width="70px" image="/images/add.png" hoverImage="/images/add.png" />
+									<button id="addAll"  width="70px" image="/images/addall.png" hoverImage="/images/addall.png" />
+									<button id="remove"  width="70px" image="/images/remove.png" hoverImage="/images/removehover.png" />      
+									<button id="removeAll"  width="70px" image="/images/removeall.png" hoverImage="/images/removeallhover.png" />      
+								</vbox>
+								<listbox id="selectedResources" hflex="1" vflex="true" checkmark="true" rows="5" multiple="true">
+									<listhead>
+										<listheader label="Selected Resources"/>
+									</listhead>
+								</listbox>
+							</hlayout>
+							<button id="btn" label="Next" image="/images/add.png" style="float: right; margin-right:10px;"/>
+						</tabpanel>                           
+		  <!-- .................................................  TAB 2: SCHEDULER  ................................................. -->    
+						<tabpanel>
+							<grid id="grid" mold="paging" pageSize="12" height="86%;">            
+							<!-- .................................................  Column 1: HEADERS  ................................................. -->    
+								<columns>
+									<column  label="Configuration" align="left" width="180px;"/>
+									<column  label="Value" align="left" />
+								</columns>
+								<rows>
+								<!-- .................................................  ROW 1: NAME  ................................................. -->    
+									<row>
+										<label sclass="hightlight" value="Name" width="150px" />
+										<vlayout>
+											<textbox id="scheduleNameTextbox" value="${win$composer.scheduleName}"  width="150px" tabindex="1" />
+										</vlayout>
+									</row>
+								<!-- .................................................   ROW 2: Testbed URI  ................................................. -->   
+								<!-- <row>                  
+										<label sclass="hightlight" value="Testbed URI" width="150px" />
+										<hlayout>
+											<textbox id="testbedURITextbox" value="${win$composer.testbedURI}"  width="150px" tabindex="1" constraint="no empty" />
+										</hlayout>
+									</row>
+								-->
+								 <!-- .................................................   ROW 2b: testbedURI   ................................................. -->   
+									<row>   
+									   <label sclass="hightlight" value="Testbed URI" width="150px" />
+									   <hlayout>									                    
+											<combobox id="testbedURICombobox" model="${win$composer.testbedURIModel}" autodrop="true" >
+												<template name="model">
+													<comboitem label="${each}" style="cursor: help;" tooltiptext="${each}"/>
+												</template>
+											</combobox>
+											<!--<popup id="testbedNameToolTip" width="300px">
+											    <vbox>
+											        <toolbarbutton label="hover" />
+											    </vbox>
+											</popup>
+											-->
+										</hlayout>
+								   </row>
+								<!-- .................................................   ROW 3a: Endpoint URI  ................................................. -->   
+								<!--	<row>                
+										<label sclass="hightlight" value="Endpoint URI" width="150px" />
+										<hlayout>
+											<textbox id="endpointURITextbox" value="${win$composer.endpointURI}"  width="150px" tabindex="1" />
+										</hlayout>
+								   </row>
+								-->
+								   <!-- .................................................   ROW 3b: Security Key   ................................................. -->   
+									<row>   
+									   <label sclass="hightlight" value="Security Key" width="150px" />
+									   <hlayout>									                    
+											<combobox id="securityKeyCombobox" model="${win$composer.securityKeyModel}" autodrop="true">
+												<template name="model">
+													<comboitem label="${each}" style="cursor: help;" tooltiptext="${each}"/>
+												</template>
+											</combobox>
+										</hlayout>
+								   </row>
+								<!-- .................................................   ROW 4: Time Schedule  ................................................. -->   
+									<row>      
+										<label sclass="hightlight" value="Time Schedule" width="150px" style="font-size:15px; font-weight: bold;"/>
+										<hlayout>
+										</hlayout>
+									</row>
+								<!-- .................................................   ROW 5: Start Time   ................................................. -->   
+									<row>     
+										<label sclass="hightlight" value="Start Time" width="150px" />
+										<hlayout>
+											<textbox id="startTimeTextbox" value="${win$composer.startTime}"  width="150px" tabindex="1" visible="false"></textbox>
+										</hlayout>									                    
+									 </row>
+								<!-- .................................................    ROW 6: Frequency   ................................................. -->   
+									<row>    
+										<label sclass="hightlight" value="Frequency" width="150px" />
+										<hlayout>
+											<intbox id="frequencyIntbox" value="${win$composer.frequency}"  width="150px" tabindex="1" constraint="no negative,no zero,no empty" visible="false"/>
+										</hlayout>
+									</row>
+								<!-- .................................................   ROW 7: Time Unit   ................................................. -->   
+									<row>   
+									   <label sclass="hightlight" value="Time Unit" width="150px" />
+									   <hlayout>									                    
+											<combobox id="timeUnitCombobox" model="${win$composer.timeUnitModel}" autodrop="true" visible="false">
+												<template name="model">
+													<comboitem label="${each}" />
+												</template>
+											</combobox>
+										</hlayout>
+								   </row>
+							</rows>                          
+						</grid>
+						<button id="schedule" label="Schedule"  image="/images/add.png" style="float: right; margin-right:10px; margin-top:10px;"/>
+					</tabpanel> 
+					<!-- .................................................  TAB 3: Status  ................................................. -->                         
+					<tabpanel>	
+						<listbox id="scheduledJobsListbox" model="${win$composer.scheduledJobsModel}" height="86%;" checkmark="true" mold="paging" pageSize="9" multiple="false">
+							<listhead>						        
+								<listheader width="32px" />
+								<!-- <listheader width="64px" label="Job ID" align="center" /> -->
+								<listheader label="Name" align="center" />
+								<listheader label="Details" align="center" />
+								<listheader label="Testbed URI" align="center" />
+								<listheader label="Sensors" align="center" />
+							</listhead>
+							<template name="model">
+								<listitem >
+									<listcell />
+									<!-- <listcell label="${each.jobID}" /> -->
+									<listcell label="${each.scheduleName}" style="cursor: help; overflow: hidden; text-overflow: ellipsis;  width:inherit; white-space: nowrap;" tooltiptext="${each.scheduleName}"/>
+									<listcell label="${each.endpointURI}" />
+									<listcell label="${each.testbedURI}" style="cursor: help; overflow: hidden; text-overflow: ellipsis;  width:inherit; white-space: nowrap;" tooltiptext="${each.testbedURI}"/>
+									<listcell label="${each.sensorIDs}" style="cursor: help; overflow: hidden; text-overflow: ellipsis;  width:inherit; white-space: nowrap;" tooltiptext="${each.sensorIDs}"></listcell>
+								</listitem>
+							</template>
+						</listbox>    
+						<button id="stop" label="Stop"  image="/images/add.png" style="float: right; margin-right:10px; margin-top:10px;"/>
+					</tabpanel>
+				</tabpanels>    
+			</tabbox>                      
+		</window>
+	</div>
+</zk>
